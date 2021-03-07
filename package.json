@@ -1,0 +1,21 @@
+{
+  "name": "basic-node-crud",
+  "version": "1.0.0",
+  "description": "Basic CRUD for Node project",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "crud",
+    "basic"
+  ],
+  "author": "Melvin Toni Gustave",
+  "license": "ISC",
+  "dependencies": {
+    "chalk": "^4.1.0",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1"
+  }
+}
