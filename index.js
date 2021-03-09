@@ -2,6 +2,7 @@ const env = require('dotenv');
 const express = require('express');
 const expressValidator = require('express-validator');
 const chalk = require('chalk');
+const mongoose = require('mongoose');
 const errorHandler = require('errorhandler');
 
 // add the list of routes here
@@ -15,6 +16,26 @@ env.config({
     debug: process.env.DEBUG,
     path: envPath
 })
+
+mongoose.connect(process.env.MONGODB, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useFindAndModify: false,
+    useCreateIndex: true
+}).then((info) => {
+    // logger(TAG, chalk.green('✓') + ' MongoDB connection Established');
+    console.log('MongoDB connection Established');
+}).catch((error) => {
+    // logger(TAG, chalk.red('✘') + ' MongoDB connection error ' + error.message);
+    console.log('MongoDB connection error');
+});
+
+// await mongoose.connect(process.env.MONGODB, {
+//   useNewUrlParser: true,
+//   useUnifiedTopology: true,
+//   useFindAndModify: false,
+//   useCreateIndex: true
+// });
 
 const app = express();
 app.set('host', process.env.HOST || 'localhost');
