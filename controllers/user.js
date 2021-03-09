@@ -60,8 +60,12 @@ exports.readOne = (req, res) => {
     traceLog(`${TAG} >> readOne`);
 
     const query = {'_id': req.params.id};
+    const excludeField = {
+        'password': 0,
+        '__v': 0
+    }
 
-    UserModel.findOne(query).then((doc) => {
+    UserModel.findOne(query, excludeField).then((doc) => {
         successLog(req, res, {
             status: true,
             message: 'Read user successfully',

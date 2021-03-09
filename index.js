@@ -33,8 +33,9 @@ mongoose.connect(process.env.MONGODB, {
 const app = express();
 app.set('host', process.env.HOST || 'localhost');
 app.set('port', process.env.PORT || 3000);
-app.use(bodyParser.urlencoded({ extended: true }))
-app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+app.use(expressValidator());
 
 // add the list of API's here
 app.use('/api/user', userRoutes);

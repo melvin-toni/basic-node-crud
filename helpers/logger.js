@@ -16,10 +16,10 @@ exports.successLog = (req, res, obj) => {
 
 exports.failedLog = (req, res, obj) => {
     console.log(chalk.red("failed"), req.method, req.originalUrl);
-    console.log(chalk.red(obj.debug));
+    console.log(chalk.red(JSON.stringify(obj.debug)));
     res.status(400).json({
         success: (obj.status ? obj.status : false),
         message: (obj.message ? obj.message : 'Operation failed'),
-        result: (obj.result ? obj.result : '')
+        errResult: (obj.errResult ? obj.errResult : '')
     });
 }
