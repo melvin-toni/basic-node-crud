@@ -1,5 +1,6 @@
 const env = require('dotenv');
 const express = require('express');
+const bodyParser = require('body-parser');
 const expressValidator = require('express-validator');
 const chalk = require('chalk');
 const mongoose = require('mongoose');
@@ -22,26 +23,18 @@ mongoose.connect(process.env.MONGODB, {
     useUnifiedTopology: true,
     useFindAndModify: false,
     useCreateIndex: true
-}).then((info) => {
-    // logger(TAG, chalk.green('✓') + ' MongoDB connection Established');
-    console.log('MongoDB connection Established');
+}).then(() => {
+    console.log(chalk.green('✓'), 'MongoDB connection established');
 }).catch((error) => {
-    // logger(TAG, chalk.red('✘') + ' MongoDB connection error ' + error.message);
-    console.log('MongoDB connection error');
+    console.log(chalk.red('✘'), 'MongoDB connection error');
+    console.log(error);
 });
-
-// await mongoose.connect(process.env.MONGODB, {
-//   useNewUrlParser: true,
-//   useUnifiedTopology: true,
-//   useFindAndModify: false,
-//   useCreateIndex: true
-// });
 
 const app = express();
 app.set('host', process.env.HOST || 'localhost');
 app.set('port', process.env.PORT || 3000);
-
-// app.use(expressValidator());
+app.use(bodyParser.urlencoded({ extended: true }))
+app.use(bodyParser.json())
 
 // add the list of API's here
 app.use('/api/user', userRoutes);

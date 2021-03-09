@@ -1,86 +1,85 @@
 const TAG = "controllers.user";
-// const mongoose = require('mongoose');
-// const logger = require("../helpers/loggerx");
 const UserModel = require("../models/User");
+const {
+    traceLog,
+    successLog,
+    failedLog
+} = require("../helpers/logger");
 
 exports.create = (req, res) => {
-    const tag = TAG + ".create";
-    // logger(tag, req.body);
-
-    // let INSERT_DOC = {
-    //     name: req.body.name,
-    //     email: req.body.advertiser,
-    //     password: req.body.password,
-    //     by: req.user._id
-    // };
+    traceLog(`${TAG} >> create`);
 
     UserModel.create(req.body).then((doc) => {
-        // logger(chalk.green("success"), req.originalUrl);
-        // logger("tag", tag);
-        res.status(200).json({
-            success: true,
-            result: doc
+        const docResult = {
+            '_id': doc._id,
+            'name': doc.name
+        }
+        successLog(req, res, {
+            status: true,
+            message: 'User successfully created',
+            result: docResult
         });
     }).catch((err) => {
-        // logger(chalk.green("failed"), req.originalUrl);
-        // logger("tag", tag);
-        console.log('USER CREATE FAILED', err);
-        res.status(403).json({
-            messages: err.messages
-        })
+        failedLog(req, res, {
+            status: false,
+            message: 'User create failed',
+            debug: err
+        });
     });
 }
 
 exports.readAll = (req, res) => {
-    const tag = TAG + ".read all";
-    // logger(tag, req.body);
+    traceLog(`${TAG} >> readAll`);
+
     let _limit = parseInt(req.query.limit) ? parseInt(req.query.limit) * 1 : 10;
     let _skip = parseInt(req.query.index) ? parseInt(req.query.index) * _limit : 0;
+    const excludeField = {
+        'password': 0,
+        '__v': 0
+    }
+    const pagination = {
+        skip: _skip, limit: _limit
+    };
 
-    UserModel.find({}).then((doc) => {
-        // logger(chalk.green("success"), req.originalUrl);
-        // logger("tag", tag);
-        res.status(200).json({
-            success: true,
+    UserModel.find({}, excludeField, pagination).then((doc) => {
+        successLog(req, res, {
+            status: true,
+            message: 'Read user successfully',
             result: doc
         });
     }).catch((err) => {
-        // logger(chalk.green("failed"), req.originalUrl);
-        // logger("tag", tag);
-        console.log('USER READ FAILED', err);
-        res.status(403).json({
-            messages: err.messages
-        })
+        failedLog(req, res, {
+            status: false,
+            message: 'Read user failed',
+            debug: err
+        });
     });
 }
 
 exports.readOne = (req, res) => {
-    const tag = TAG + ".read detail";
-    // logger(tag, req.body);
-    let _limit = parseInt(req.query.limit) ? parseInt(req.query.limit) * 1 : 10;
-    let _skip = parseInt(req.query.index) ? parseInt(req.query.index) * _limit : 0;
+    traceLog(`${TAG} >> readOne`);
 
-    UserModel.findOne({'_id': req.params.id}).then((doc) => {
-        // logger(chalk.green("success"), req.originalUrl);
-        // logger("tag", tag);
-        res.status(200).json({
-            success: true,
+    const query = {'_id': req.params.id};
+
+    UserModel.findOne(query).then((doc) => {
+        successLog(req, res, {
+            status: true,
+            message: 'Read user successfully',
             result: doc
         });
     }).catch((err) => {
-        // logger(chalk.green("failed"), req.originalUrl);
-        // logger("tag", tag);
-        console.log('USER READ FAILED', err);
-        res.status(403).json({
-            messages: err.messages
-        })
+        failedLog(req, res, {
+            status: false,
+            message: 'Read user failed',
+            debug: err
+        });
     });
 }
 
 exports.update = (req, res) => {
-    const tag = TAG + ".update";
+    traceLog(`${TAG} >> update`);
 
-    const query = { _id: req.params.id };
+    const query = {'_id': req.params.id};
 
     let UPDATE_DOC = {};
     req.body.name ? (UPDATE_DOC['name'] = req.body.name) : '';
@@ -92,25 +91,22 @@ exports.update = (req, res) => {
     }
         
     UserModel.findOneAndUpdate(query, UPDATE_DOC, queryOptions).then((doc) => {
-
-        // logger(chalk.green("success"), req.originalUrl);
-        // logger("tag", tag);
-        res.status(200).json({
-            success: true,
+        successLog(req, res, {
+            status: true,
+            message: 'Update user successfully',
             result: doc
         });
     }).catch((err) => {
-        // logger(chalk.green("failed"), req.originalUrl);
-        // logger("tag", tag);
-        console.log('USER UPDATE FAILED', err);
-        res.status(403).json({
-            messages: err.messages
-        })
+        failedLog(req, res, {
+            status: false,
+            message: 'Update user failed',
+            debug: err
+        });
     });
 }
 
 exports.delete = (req, res) => {
-    const tag = TAG + ".delete";
+    traceLog(`${TAG} >> delete`);
 
     const query = { _id: req.params.id };
     
@@ -119,19 +115,15 @@ exports.delete = (req, res) => {
     }
         
     UserModel.findOneAndUpdate(query, {'is_deleted': true}, queryOptions).then((doc) => {
-
-        // logger(chalk.green("success"), req.originalUrl);
-        // logger("tag", tag);
-        res.status(200).json({
-            success: true,
-            result: doc
+        successLog(req, res, {
+            status: true,
+            message: 'Delete user successfully'
         });
     }).catch((err) => {
-        // logger(chalk.green("failed"), req.originalUrl);
-        // logger("tag", tag);
-        console.log('USER DELETE FAILED', err);
-        res.status(403).json({
-            messages: err.messages
-        })
+        failedLog(req, res, {
+            status: false,
+            message: 'Delete user failed',
+            debug: err
+        });
     });
 }
