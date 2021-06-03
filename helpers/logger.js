@@ -1,13 +1,13 @@
 const chalk = require('chalk');
 
 exports.traceLog = (TAG) => {
-    process.env.DEBUG && console.log(chalk.blue(TAG));
+    console.log(chalk.blue(TAG));
 }
 
 exports.successLog = (req, res, obj) => {
     console.log(chalk.green("success"), req.method, req.originalUrl);
 
-    res.status(200).json({
+    res.status((obj.code ? obj.code : 200 )).json({
         success: (obj.status ? obj.status : true),
         message: (obj.message ? obj.message : 'Operation successful'),
         result: (obj.result ? obj.result : '')
@@ -16,10 +16,14 @@ exports.successLog = (req, res, obj) => {
 
 exports.failedLog = (req, res, obj) => {
     console.log(chalk.red("failed"), req.method, req.originalUrl);
-    console.log(chalk.red(JSON.stringify(obj.debug)));
-    res.status(400).json({
+    console.log(chalk.red(obj.debug));
+    let showError = {
         success: (obj.status ? obj.status : false),
-        message: (obj.message ? obj.message : 'Operation failed'),
-        errResult: (obj.errResult ? obj.errResult : '')
-    });
+        message: (obj.message ? obj.message : 'Operation failed')
+    };
+    if (obj.result) {
+        showError['result'] = (obj.result ? obj.result : '');
+    }
+    
+    res.status((obj.code ? obj.code : 400 )).json(showError);
 }
